@@ -162,7 +162,7 @@ void render(int width, int height)
 // 
 int main(int argc, char **argv)
 {
-	Renderer().Render();
+	Renderer().Render("C:\\Data\\Victoria\\CGRA408_Rendering\\Ass1\\Project1\\TestScene.txt");
 	//Film f = Film("Asdf.jpg", 200, 200);
 	//CreateCamera(vec3(0, 10, 100), vec3(0, -1, 0), vec3(0, 1, 0), 30, f);
 //	f.writeTest();

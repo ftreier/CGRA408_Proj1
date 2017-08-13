@@ -18,6 +18,8 @@ SET(headers
 	"light.hpp"
 	"distantLight.hpp"
 	"material.hpp"
+	"plain.hpp"
+	"pointLight.hpp"
 )
 
 # TODO list your source files (.cpp) here
@@ -34,6 +36,8 @@ SET(sources
 	"light.cpp"
 	"distantLight.cpp"
 	"material.cpp"
+	"plain.cpp"
+	"pointLight.cpp"
 )
 
 # Add executable target and link libraries

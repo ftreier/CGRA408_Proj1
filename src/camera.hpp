@@ -13,7 +13,7 @@ class Camera
 {
 public:
 
-	Camera(cgra::mat4& viewToWorld, cgra::mat4& camToScreen, Film film);
+	Camera(cgra::mat4& viewToWorld, cgra::mat4& camToScreen, Film* film);
 	~Camera();
 
 	Ray GenerateRay(Sample s);
@@ -30,4 +30,4 @@ private:
 	//cgra::vec4 MatrixVector(cgra::mat4 m, cgra::vec4 v);
 };
 
-Camera* CreateCamera(cgra::vec3 &position, cgra::vec3 &viewingDir, cgra::vec3 &upDir, float fov, Film f);
+Camera* CreateCamera(cgra::vec3 &position, cgra::vec3 &viewingDir, cgra::vec3 &upDir, float fov, Film* f);

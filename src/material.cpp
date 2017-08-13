@@ -5,9 +5,10 @@
 using namespace cgra;
 using namespace std;
 
-Material::Material(vec3 color, float reflectionFactor, float refractionFactor, float refractionIndex)
+Material::Material(vec3 doffColor, vec3 specColor, float reflectionFactor, float refractionFactor, float refractionIndex)
 {
-	_difuseColor = color;
+	_difuseColor = doffColor;
+	_specColor = specColor;
 	_reflectionFactor = reflectionFactor;
 	_refractionFactor = refractionFactor;
 	_refractionIndex = refractionIndex;
@@ -52,11 +53,13 @@ vec4 Material::refract(vec4 direction, vec4 normal, float n2)
 vec3 Material::CalculateColor(Ray* ray, Shape* s)
 {
 	vec3 directLighting = vec3(0);
+	vec3 specular;
 	vec3 reflectColor = vec3(0);
 	vec3 refractColor = vec3(0);
 
 	for (Light* light : Renderer::GetLights())
 	{
+		ray->ConvertToSpace(light->GetWorldToObject());
 		float dotProd;
 		vec4 lightDirection = light->GetLightDirection(ray->GetHitPoint());
 
@@ -90,9 +93,11 @@ vec3 Material::CalculateColor(Ray* ray, Shape* s)
 			// Diffuse
 			directLighting += _difuseColor * light->GetLightIntensity() * dotProd;
 
-			//vec4 reflectionVector = reflect(lightDirection, hitNormal);
-			//specular += _specColor * light->GetLightIntensity() * std::pow(std::max(0.f, dot(reflectionVector, -ray->GetDirection())), 32);
+			vec4 reflectionVector = reflect(lightDirection, hitNormal);
+			specular += _specColor * light->GetLightIntensity() * std::pow(std::max(0.f, dot(reflectionVector, -ray->GetDirection())), 32);
 		}
+
+		ray->ConvertToSpace(light->GetObjectToWorld());
 	}
 
 
@@ -152,15 +157,15 @@ vec3 Material::CalculateColor(Ray* ray, Shape* s)
 		}
 	}
 
-	return directLighting + reflectColor + refractColor;
+	return directLighting + specular + reflectColor + refractColor;
 }
 
 Material* CreateRedPlastic()
 {
-	return new Material(vec3(0.7, 0, 0), 0.7, 0, 0);
+	return new Material(vec3(0.7, 0, 0), vec3(0.7, 0.5, 0.5), 0.7, 0, 0);
 }
 
 Material* CreateGlass()
 {
-	return new Material(vec3(0.01), 0.4, 0.8, 1.5);
+	return new Material(vec3(0.01), vec3(0.5), 0.0, 1, 1.5);
 }

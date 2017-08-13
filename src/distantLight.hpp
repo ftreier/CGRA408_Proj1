@@ -5,7 +5,7 @@
 class DistantLight : public Light
 {
 public:
-	DistantLight(cgra::vec4 direction, cgra::vec3 lightIntensity);
+	DistantLight(cgra::vec4 direction, cgra::vec3 lightIntensity, cgra::mat4 objectToWorld);
 	bool Obstructed(cgra::vec4) override;
 	cgra::vec4 GetLightDirection(cgra::vec4) override;
 

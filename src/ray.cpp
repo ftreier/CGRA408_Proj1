@@ -59,26 +59,26 @@ void Ray::ConvertToSpace(mat4 m)
 	}
 }
 
-void Ray::SetHitPoint(float pt1, float pt2)
-{
-	_hitPoint = _hitNormal = _origin + pt1 * _direction;
-	_hitNormal.w = 0;
-
-	if (length(_hitNormal) != 0)
-	{
-		_hitNormal = normalize(_hitNormal);
-	}
-
-	_hitPoint2 = _hitNormal2 = _origin + pt2 * _direction;
-	_hitNormal2.w = 0;
-
-	if (length(_hitNormal2) != 0)
-	{
-		_hitNormal2 = normalize(_hitNormal2);
-	}
-
-	_hitDistance = length(_origin - _hitPoint);
-}
+//void Ray::SetHitPoint(float pt1, float pt2)
+//{
+//	_hitPoint = _hitNormal = _origin + pt1 * _direction;
+//	_hitNormal.w = 0;
+//
+//	if (length(_hitNormal) != 0)
+//	{
+//		_hitNormal = normalize(_hitNormal);
+//	}
+//
+//	_hitPoint2 = _hitNormal2 = _origin + pt2 * _direction;
+//	_hitNormal2.w = 0;
+//
+//	if (length(_hitNormal2) != 0)
+//	{
+//		_hitNormal2 = normalize(_hitNormal2);
+//	}
+//
+//	_hitDistance = length(_origin - _hitPoint);
+//}
 
 cgra::vec4 Ray::GetHitNormal()
 {
@@ -97,7 +97,7 @@ cgra::vec4 Ray::GetHitPoint2()
 
 float Ray::GetDistance()
 {
-	return _hitDistance;
+	return length(_origin - _hitPoint);
 }
 
 bool Ray::AlongDirection()
@@ -111,4 +111,24 @@ bool Ray::AlongDirection()
 cgra::vec4 Ray::GetHitNormal2()
 {
 	return _hitNormal2;
+}
+
+void Ray::SetHitPoint1(cgra::vec4 point)
+{
+	_hitPoint = point;
+}
+
+void Ray::SetHitnormal1(cgra::vec4 normal)
+{
+	_hitNormal = normal;
+}
+
+void Ray::SetHitPoint2(cgra::vec4 point)
+{
+	_hitPoint2 = point;
+}
+
+void Ray::SetHitnormal2(cgra::vec4 normal)
+{
+	_hitNormal2 = normal;
 }

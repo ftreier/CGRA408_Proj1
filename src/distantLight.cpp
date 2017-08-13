@@ -3,9 +3,10 @@
 
 using namespace cgra;
 
-DistantLight::DistantLight(vec4 direction, vec3 lightIntensity) : Light(lightIntensity)
+DistantLight::DistantLight(vec4 direction, vec3 lightIntensity, mat4 objectToWorld)
+	: Light(lightIntensity, objectToWorld)
 {
-	_direction = normalize(direction);
+	_direction = normalize(objectToWorld * direction);
 }
 
 
@@ -30,5 +31,5 @@ cgra::vec4 DistantLight::GetLightDirection(cgra::vec4)
 
 DistantLight* CreateDistantLight(cgra::vec4 direction, cgra::vec3 lightIntensity)
 {
-	return new DistantLight(direction, lightIntensity);
+	return new DistantLight(direction, lightIntensity, mat4::translate(0, 0, 0));
 }

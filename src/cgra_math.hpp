@@ -1466,7 +1466,7 @@ namespace cgra {
 
 		static vector4 checknan(const vector4 &v) {
 			T sum = v.x + v.y + v.z + v.w;
-			assert(sum == sum);
+			//assert(sum == sum);
 			return v;
 		}
 

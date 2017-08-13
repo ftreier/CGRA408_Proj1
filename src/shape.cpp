@@ -23,14 +23,17 @@ mat4 Shape::GetWorldToObject()
 	return _worldToObject;
 }
 
-cgra::mat4 Shape::GetObjectToWorld()
+mat4 Shape::GetObjectToWorld()
 {
 	return _objectToWorld;
 }
 
-cgra::vec3 Shape::CalculateLight(Ray* ray)
+vec3 Shape::CalculateLight(Ray* ray)
 {
-	return _material->CalculateColor(ray, this);
+//	ray->ConvertToSpace(GetWorldToObject());
+	auto calculate_color = _material->CalculateColor(ray, this);
+//	ray->ConvertToSpace(GetObjectToWorld());
+	return calculate_color;
 }
 
 bool Shape::Intersect(Ray* ray)

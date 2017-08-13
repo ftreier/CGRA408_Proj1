@@ -38,14 +38,22 @@ bool Quadratic(float A, float B, float C, float *t0, float *t1) {
 	return true;
 }
 
+void Sphere::SetHitPoint(Ray* ray, float t0, float t1)
+{
+	ray->SetHitPoint1(ray->GetOrigin() + t0 * ray->GetDirection());
+	auto d = ray->GetHitPoint();
+	d.w = 0;
+	ray->SetHitnormal1(normalize(d));
+
+	ray->SetHitPoint2(ray->GetOrigin() + t1 * ray->GetDirection());
+	d = ray->GetHitPoint2();
+	d.w = 0;
+	ray->SetHitnormal2(normalize(d));
+}
+
 bool Sphere::intersectP(Ray* ray)
 {
 	float phi;
-	//Point phit;
-	//// Transform _Ray_ to object space
-	//Ray ray;
-	//ray->ConvertToSpace(GetWorldToObject());
-	//(*WorldToObject)(r, &ray);
 
 	//// Compute quadratic sphere coefficients
 	float A = ray->GetDirection().x*ray->GetDirection().x + ray->GetDirection().y*ray->GetDirection().y + ray->GetDirection().z*ray->GetDirection().z;
@@ -59,22 +67,8 @@ bool Sphere::intersectP(Ray* ray)
 		return false;
 	}
 
-	//float x = ray->GetOrigin().x + t0 * ray->GetDirection().x;
-	//float y = ray->GetOrigin().y + t0 * ray->GetDirection().y;
-	//float z = ray->GetOrigin().z + t0 * ray->GetDirection().z;
-
-	vec4 hit = ray->GetOrigin() + t0 * ray->GetDirection();
-	ray->SetHitPoint(t0, t1);
-	//if(x != hit.x || y != hit.y || z != hit.z || hit.w != 1)
-	//{
-	//	std::cout << "ASDF";
-	//}
-
-	//if(x > _radius || y > _radius || z > _radius || sqrt(x*x+y*y+z*z) - 0.001 > _radius)
-	//{
-	//	std::cout << "asdf";
-	//}
-	//ray->ConvertToSpace(GetObjectToWorld());
+	//vec4 hit = ray->GetOrigin() + t0 * ray->GetDirection();
+	SetHitPoint(ray, t0, t1);
 	return true;
 }
 

@@ -7,13 +7,14 @@ class Shape;
 class Material
 {
 public:
-	Material(cgra::vec3 color, float, float, float);
+	Material(cgra::vec3 diffColor, cgra::vec3 specColor, float, float, float);
 	cgra::vec4 reflect(const cgra::vec4& d, const cgra::vec4& n);
 	cgra::vec4 refract(cgra::vec4 direction, cgra::vec4 normal, float n2);
 	cgra::vec3 CalculateColor(Ray* r, Shape* s);
 
 private:
 	cgra::vec3 _difuseColor;
+	cgra::vec3 _specColor;
 	float _reflectionFactor;
 	float _refractionFactor;
 	float _refractionIndex;
