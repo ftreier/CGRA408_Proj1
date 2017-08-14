@@ -15,7 +15,6 @@ static vector<Light*> _lights;
 
 Renderer::Renderer()
 {
-	//_shapes = vector<Shape>();
 }
 
 Renderer::~Renderer()
@@ -38,7 +37,7 @@ void Renderer::readLine(int& size, int& c, char*& buffer, FILE* file)
 	buffer[pos] = 0;
 }
 
-vector<string> Renderer::Split(string& cs)
+vector<string> Renderer::split(string& cs)
 {
 	vector<string> tokens;
 	istringstream iss(cs);
@@ -61,11 +60,11 @@ int _pixelsamples;
 
 string Renderer::basicTrim(string part)
 {
-	while (part[0] == '[' || part[0] == ' ' || part[0] == '"')
+	while (part.length() > 0 && (part[0] == '[' || part[0] == ' ' || part[0] == '"'))
 	{
 		part.erase(0, 1);
 	}
-	while (part[part.length()-1] == ']' || part[part.length() - 1] == '"' || part[part.length() - 1] == ']')
+	while (part.length() > 0 && (part[part.length()-1] == ']' || part[part.length() - 1] == '"' || part[part.length() - 1] == ']'))
 	{
 		part.erase(part.size() - 1, 1);
 	}
@@ -73,10 +72,9 @@ string Renderer::basicTrim(string part)
 	return part;
 }
 
-
 void Renderer::processCommand(string& cs)
 {
-	vector<string> tokens = Split(cs);
+	vector<string> tokens = split(cs);
 
 	if(tokens.size() > 0)
 	{
@@ -105,7 +103,7 @@ void Renderer::processCommand(string& cs)
 			int type = 0;
 			int pixelSamples = 1;
 
-			for (int i = 1; i < tokens.size() - 1; i++)
+			for (int i = 1; i < tokens.size(); i++)
 			{
 				auto part = basicTrim(tokens.at(i));
 
@@ -115,7 +113,7 @@ void Renderer::processCommand(string& cs)
 				}
 				else if (part.find("pixelsamples") == 0)
 				{
-					pixelSamples = stoi(basicTrim(tokens.at(i + 1)));
+					pixelSamples = stoi(basicTrim(tokens.at(++i)));
 				}
 			}
 
@@ -158,7 +156,7 @@ void Renderer::processCommand(string& cs)
 			vec3 color;
 			int type = 0;
 
-			for (int i = 1; i < tokens.size() - 1; i++)
+			for (int i = 1; i < tokens.size(); i++)
 			{
 				auto part = basicTrim(tokens.at(i));
 				if (part.find("distant") == 0)
@@ -257,7 +255,7 @@ void Renderer::processCommand(string& cs)
 			float param1 = 1;
 			float param2 = 1;
 
-			for (int i = 1; i < tokens.size() - 1; i++)
+			for (int i = 1; i < tokens.size(); i++)
 			{
 				auto part = basicTrim(tokens.at(i));
 				if (part.find("sphere") == 0)
@@ -297,7 +295,7 @@ void Renderer::processCommand(string& cs)
 	}
 }
 
-void Renderer::ParesFile(string& cs)
+void Renderer::paresFile(string& cs)
 {
 	int size = 1024;
 	int c;
@@ -348,7 +346,8 @@ void Renderer::ParesFile(string& cs)
 					{
 						cout << "Error processing command: " << command << endl;
 						cout << "Error message: " << ex.what();
-					}					command = "";
+					}	
+					command = "";
 					if (nextCommand.find("AttributeBegin") != string::npos)
 					{
 						noOfSpaces += 2;
@@ -414,7 +413,7 @@ void Renderer::cleanup()
 
 void Renderer::Render(string configFile)
 {
-	ParesFile(configFile);
+	paresFile(configFile);
 	//int samples = 1;
 	//Film* f = new Film("Asdf.jpg", 400, 400);
 	//auto camera = CreateCamera(vec3(0.f, 10.f, 100.f), vec3(0, -1, 0), vec3(0, 1, 0), 30, f);
@@ -466,6 +465,7 @@ void Renderer::Render(string configFile)
 				}
 
 			}
+
 			_film->SetColor(i, j, color / _pixelsamples);
 		}
 	}

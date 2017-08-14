@@ -21,4 +21,5 @@ public:
 	cgra::vec3 CalculateLight(Ray*);
 
 	bool Intersect(Ray* ray);
+	virtual int GetRadius() = 0;
 };

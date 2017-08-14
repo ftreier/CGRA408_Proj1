@@ -8,6 +8,11 @@ Sphere::Sphere(float radius, mat4 objToWorld, mat4 worldToObj, Material* mat)
 	_radius = radius;
 }
 
+int Sphere::GetRadius()
+{
+	return _radius;
+}
+
 bool Quadratic(float A, float B, float C, float *t0, float *t1) {
 	// Find quadratic discriminant
 	float discriminant = B * B - 4.f * A * C;

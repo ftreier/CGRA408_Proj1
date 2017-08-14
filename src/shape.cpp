@@ -43,4 +43,3 @@ bool Shape::Intersect(Ray* ray)
 	ray->ConvertToSpace(GetObjectToWorld());
 	return b;
 }
-
