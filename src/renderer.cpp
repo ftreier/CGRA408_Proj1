@@ -107,13 +107,16 @@ void Renderer::processCommand(string& cs)
 			{
 				auto part = basicTrim(tokens.at(i));
 
-				if (part.find("random"))
+				if (part.find("random") == 0)
 				{
 					type = 1;
 				}
-				else if (part.find("pixelsamples") == 0)
+				else
 				{
-					pixelSamples = stoi(basicTrim(tokens.at(++i)));
+					if (part.find("pixelsamples") == 0)
+					{
+						pixelSamples = stoi(basicTrim(tokens.at(++i)));
+					}
 				}
 			}
 

@@ -30,9 +30,9 @@ mat4 Shape::GetObjectToWorld()
 
 vec3 Shape::CalculateLight(Ray* ray)
 {
-//	ray->ConvertToSpace(GetWorldToObject());
+	//ray->ConvertToSpace(GetWorldToObject());
 	auto calculate_color = _material->CalculateColor(ray, this);
-//	ray->ConvertToSpace(GetObjectToWorld());
+	//ray->ConvertToSpace(GetObjectToWorld());
 	return calculate_color;
 }
 

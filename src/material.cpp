@@ -73,17 +73,12 @@ vec3 Material::CalculateColor(Ray* ray, Shape* s)
 			{
 				if (shape != s && shape->Intersect(&newRay))
 				{
-					if (s->GetRadius() == 20)
-					{
-						cout << "ASDF";
-					}
-					// Calculate direction
 					auto v = newRay.GetHitPoint() - newRay.GetOrigin();
 					auto v2 = normalize(v);
 					auto v3 = v2 - newRay.GetDirection();
 
 					// if obstruction lies between light source and point, do not consider this light source
-					//if (v3.x == 0 && v3.y == 0 && v3.z == 0 && v3.w == 0)
+					if (v3.x <= 0.0001 && v3.y <= 0.0001 && v3.z <= 0.0001 && v3.w <= 0.0001)
 					{
 						//if(!newRay.AlongDirection())
 						//{
@@ -98,8 +93,8 @@ vec3 Material::CalculateColor(Ray* ray, Shape* s)
 			directLighting += _difuseColor * light->GetLightIntensity() * dotProd;
 
 			// Specular
-			//vec4 reflectionVector = reflect(lightDirection, hitNormal);
-			//specular += _specColor * light->GetLightIntensity() * std::pow(std::max(0.f, dot(reflectionVector, -ray->GetDirection())), 32);
+			vec4 reflectionVector = reflect(lightDirection, hitNormal);
+			specular += _specColor * light->GetLightIntensity() * std::pow(std::max(0.f, dot(reflectionVector, -ray->GetDirection())), 32);
 		}
 
 		//ray->ConvertToSpace(light->GetObjectToWorld());
