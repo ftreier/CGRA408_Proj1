@@ -23,19 +23,8 @@ vec4 Material::reflect(const vec4 &d, const vec4 &n)
 
 vec4 Material::refract(vec4 direction, vec4 normal, float n1, float n2)
 {
-
 	float cosi = dot(direction, normal);
-	//float n1 = 1;	// Vacuum
 	vec4 n = normal;
-	//if (cosi < 0)
-	//{
-	//	cosi = -cosi;
-	//}
-	//else
-	//{
-	//	swap(n1, n2);
-	//	n = -normal;
-	//}
 
 	float eta = n1 / n2;
 	float k = 1 - eta * eta * (1 - cosi * cosi);
@@ -44,10 +33,8 @@ vec4 Material::refract(vec4 direction, vec4 normal, float n1, float n2)
 		// total internal reflection
 		return vec4(0);
 	}
-	else
-	{
-		return eta * direction + (eta * cosi - sqrtf(k)) * n;
-	}
+	
+	return eta * direction + (eta * cosi - sqrtf(k)) * n;
 }
 
 vec3 Material::CalculateColor(Ray* ray, Shape* s)
