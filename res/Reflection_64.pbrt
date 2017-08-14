@@ -1,0 +1,51 @@
+LookAt 0 10 100   0 -1 0 0 1 0
+Camera "perspective" "float fov" [30]
+PixelFilter "mitchell" "float xwidth" [2] "float ywidth" [2]
+Sampler "random" "int pixelsamples" [64]
+Film "image" "string filename" ["scene.jpg"]
+     "integer xresolution" [400] "integer yresolution" [400]
+
+WorldBegin
+AttributeBegin
+  LightSource "distant"
+              "point from" [0 0 0] "point to" [0.1 1 0]
+              "rgb L"    [1 1 1]
+AttributeEnd
+
+AttributeBegin
+  LightSource "distant"
+              "point from" [0 0 0] "point to" [-1 0.5 -0.5]
+              "rgb L"    [0.8 0.5 0.3]
+AttributeEnd
+
+AttributeBegin
+  Translate 0, -25, -10
+  Material "matte"
+           "point color" [0.5 0.6 0.9]
+           "float Kr" [0]
+           "float Kt" [0]
+           "float eta" [1.5]
+  Shape "sphere" "float radius" [7]
+AttributeEnd
+
+AttributeBegin
+  Translate 0 7 -20
+  Material "matte"
+           "point color" [0.8 1 0.8]
+           "float Kr" [1]
+           "float Kt" [0]
+           "float eta" [1.5]
+  Shape "sphere" "float radius" [20]
+AttributeEnd
+
+AttributeBegin
+  Rotate 60 0 1 0
+  Translate -13 0 -30
+  Material "matte"
+           "point color" [1 1 1]
+           "float Kr" [0]
+           "float Kt" [0]
+           "float eta" [1]
+  Shape "plain" "float width" [100] "float height" [100]
+AttributeEnd
+WorldEnd

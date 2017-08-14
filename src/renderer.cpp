@@ -56,7 +56,7 @@ int _fov = 30;
 Camera* _camera;
 Film* _film;
 Material* _material;
-int _pixelsamples;
+int _pixelsamples = 1;
 
 string Renderer::basicTrim(string part)
 {

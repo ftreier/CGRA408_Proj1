@@ -102,10 +102,10 @@ float Ray::GetDistance()
 
 bool Ray::AlongDirection()
 {
-	auto v = normalize(GetHitPoint() - GetOrigin()) - normalize(GetDirection());
+	auto v = normalize(GetHitPoint() - GetOrigin()) - (GetDirection());
 
 	// if obstruction lies between light source and point, do not consider this light source
-	return v.x == 0 && v.y == 0 && v.z == 0 && v.w == 0;
+	return v.x <= 0.0001 && v.y <= 0.0001 && v.z <= 0.0001 && v.w <= 0.0001;
 }
 
 cgra::vec4 Ray::GetHitNormal2()
