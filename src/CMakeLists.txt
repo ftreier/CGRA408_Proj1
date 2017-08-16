@@ -20,6 +20,7 @@ SET(headers
 	"material.hpp"
 	"plain.hpp"
 	"pointLight.hpp"
+	"triangleMesh.hpp"
 )
 
 # TODO list your source files (.cpp) here
@@ -38,6 +39,7 @@ SET(sources
 	"material.cpp"
 	"plain.cpp"
 	"pointLight.cpp"
+	"triangleMesh.cpp"
 )
 
 # Add executable target and link libraries

@@ -5,10 +5,10 @@
 class Renderer
 {
 public:
-	static const int MAX_RAYCAST_DEPTH = 5;
 
 	Renderer();
 	~Renderer();
+	static int GetRayCasteDepth();
 	static void Render(std::string);
 
 	static std::vector<Light*> GetLights();

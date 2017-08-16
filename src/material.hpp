@@ -2,7 +2,7 @@
 
 class Shape;
 
-#include "shape.hpp";
+#include "shape.hpp"
 
 class Material
 {
@@ -18,6 +18,11 @@ private:
 	float _reflectionFactor;
 	float _refractionFactor;
 	float _refractionIndex;
+
+	std::uniform_real_distribution<float> _randomDistribution;
+	std::mt19937 _randomGenerator;
+
+	float rn();
 };
 
 Material* CreateRedPlastic();

@@ -31,10 +31,10 @@ using namespace cgra;
 Geometry::Geometry(string filename) {
 	m_filename = filename;
 	readOBJ(filename);
-	if (m_triangles.size() > 0) {
-		createDisplayListPoly();
-		createDisplayListWire();
-	}
+	//if (m_triangles.size() > 0) {
+	//	createDisplayListPoly();
+	//	createDisplayListWire();
+	//}
 }
 
 
@@ -143,7 +143,7 @@ void Geometry::readOBJ(string filename) {
 				}
 
 				// IF we have 3 verticies, construct a triangle
-				if(verts.size() == 3)
+				if(verts.size() >= 3)
 				{
 					triangle tri;
 					tri.v[0] = verts[0];
@@ -295,4 +295,24 @@ void Geometry::renderGeometry() {
 
 void Geometry::toggleWireFrame() {
 	m_wireFrameOn = !m_wireFrameOn;
+}
+
+void Geometry::createBoundingBox()
+{
+	_bb = BoundingBox();
+	for(vec3 point : m_points)
+	{
+		_bb.minx = min(_bb.minx, point.x);
+		_bb.miny = min(_bb.miny, point.y);
+		_bb.minz = min(_bb.minz, point.z);
+
+		_bb.maxx = max(_bb.maxx, point.x);
+		_bb.maxy = max(_bb.maxy, point.y);
+		_bb.maxz = max(_bb.maxz, point.z);
+	}
+}
+
+BoundingBox Geometry::GetBoundingBox()
+{
+	return _bb;
 }

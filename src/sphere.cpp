@@ -8,11 +8,6 @@ Sphere::Sphere(float radius, mat4 objToWorld, mat4 worldToObj, Material* mat)
 	_radius = radius;
 }
 
-int Sphere::GetRadius()
-{
-	return _radius;
-}
-
 void Sphere::SetHitPoint(Ray* ray, float t0, float t1)
 {
 	ray->SetHitPoint1(ray->GetOrigin() + t0 * ray->GetDirection());

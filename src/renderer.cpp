@@ -6,12 +6,14 @@
 #include "shape.hpp"
 #include "plain.hpp"
 #include <iterator>
+#include "triangleMesh.hpp"
 
 using namespace cgra;
 using namespace std;
 
 static vector<Shape*> _shapes;
 static vector<Light*> _lights;
+static int _maxRayCastDepth = 5;
 
 Renderer::Renderer()
 {
@@ -19,6 +21,11 @@ Renderer::Renderer()
 
 Renderer::~Renderer()
 {
+}
+
+int Renderer::GetRayCasteDepth()
+{
+	return _maxRayCastDepth;
 }
 
 void Renderer::readLine(int& size, int& c, char*& buffer, FILE* file)
@@ -85,15 +92,17 @@ void Renderer::processCommand(string& cs)
 			_viwDir = vec3(stof(tokens.at(4)), stof(tokens.at(5)), stof(tokens.at(6)));
 			_upDir = vec3(stof(tokens.at(7)), stof(tokens.at(8)), stof(tokens.at(9)));
 		}
+		else if (token.find("RayCastDepth") == 0)
+		{
+			_maxRayCastDepth = stoi(basicTrim(tokens.at(1)));
+		}
 		else if (token.find("Camera") == 0)
 		{
-			for (int i = 1; i < tokens.size()- 1; i++)
+			for (int i = 1; i < tokens.size() - 1; i++)
 			{
-				if(basicTrim(tokens.at(i)).find("fov") == 0)
+				if (basicTrim(tokens.at(i)).find("fov") == 0)
 				{
-					auto part = tokens.at(i+1);
-
-					_fov = stoi(basicTrim(part));
+					_fov = stoi(basicTrim(tokens.at(i + 1)));
 					break;
 				}
 			}
@@ -157,6 +166,8 @@ void Renderer::processCommand(string& cs)
 			vec3 from;
 			vec4 to;
 			vec3 color;
+			int samples = 1;
+			float dispersionFactor = 1;
 			int type = 0;
 
 			for (int i = 1; i < tokens.size(); i++)
@@ -181,12 +192,20 @@ void Renderer::processCommand(string& cs)
 					color = vec3(stof(basicTrim(tokens.at(i + 1))), stof(basicTrim(tokens.at(i + 2))), stof(basicTrim(tokens.at(i + 3))));
 					i += 3;
 				}
+				else if (part.find("samples") == 0)
+				{
+					samples = stoi(basicTrim(tokens.at(++i)));
+				}
+				else if (part.find("dispersionFactor") == 0)
+				{
+					dispersionFactor = stof(basicTrim(tokens.at(++i)));
+				}
 			}
 
 			switch (type)
 			{
 			case 1:
-				_lights.push_back(CreateDistantLight(to, color));
+				_lights.push_back(CreateDistantLight(to, color, samples, dispersionFactor));
 				break;
 			default: 
 				cout << "Not supported light source detected" << endl;
@@ -217,8 +236,8 @@ void Renderer::processCommand(string& cs)
 		}
 		else if (token.find("Material") == 0)
 		{
-			vec3 color;
 			vec3 diffColor;
+			vec3 specColor;
 			float reflection = 0.2;
 			float refraction = 0;
 			float refractionIndex = 1;
@@ -228,12 +247,12 @@ void Renderer::processCommand(string& cs)
 				auto part = basicTrim(tokens.at(i));
 				if (part.find("color") == 0)
 				{
-					color = vec3(stof(basicTrim(tokens.at(i + 1))), stof(basicTrim(tokens.at(i + 2))), stof(basicTrim(tokens.at(i + 3))));
+					diffColor = vec3(stof(basicTrim(tokens.at(i + 1))), stof(basicTrim(tokens.at(i + 2))), stof(basicTrim(tokens.at(i + 3))));
 					i += 3;
 				}
-				if (part.find("diffColor") == 0)
+				if (part.find("specColor") == 0)
 				{
-					diffColor = vec3(stof(basicTrim(tokens.at(i + 1))), stof(basicTrim(tokens.at(i + 2))), stof(basicTrim(tokens.at(i + 3))));
+					specColor = vec3(stof(basicTrim(tokens.at(i + 1))), stof(basicTrim(tokens.at(i + 2))), stof(basicTrim(tokens.at(i + 3))));
 					i += 3;
 				}
 				else if (part.find("Kr") == 0)
@@ -250,13 +269,14 @@ void Renderer::processCommand(string& cs)
 				}
 			}
 
-			_material = new Material(color, diffColor, reflection, refraction, refractionIndex);
+			_material = new Material(diffColor, specColor, reflection, refraction, refractionIndex);
 		}
 		else if (token.find("Shape") == 0)
 		{
 			int type = 0;
 			float param1 = 1;
 			float param2 = 1;
+			string filename;
 
 			for (int i = 1; i < tokens.size(); i++)
 			{
@@ -268,6 +288,10 @@ void Renderer::processCommand(string& cs)
 				if (part.find("plain") == 0)
 				{
 					type = 2;
+				}
+				if (part.find("trianglemesh") == 0)
+				{
+					type = 3;
 				}
 				else if (part.find("radius") == 0)
 				{
@@ -281,6 +305,10 @@ void Renderer::processCommand(string& cs)
 				{
 					param2 = stof(basicTrim(tokens.at(++i)));
 				}
+				else if (part.find("filename") == 0)
+				{
+					filename = basicTrim(tokens.at(++i));
+				}
 			}
 
 			switch (type)
@@ -290,6 +318,9 @@ void Renderer::processCommand(string& cs)
 				break;
 			case 2:
 				_shapes.push_back(CreatePlain(param1, param2, _translation, _rotation, _material));
+				break;
+			case 3:
+				_shapes.push_back(CreateTriangleMesh(filename, _translation, _rotation, _material));
 				break;
 			default:
 				cout << "Not supported shape detected" << endl;
@@ -323,7 +354,7 @@ void Renderer::paresFile(string& cs)
 
 				for (int i = 0; i < size; i++)
 				{
-					if (buffer[i] != ' ')
+					if (buffer[i] != ' ' && buffer[i] != '\t')
 					{
 						if (i > noOfSpaces)
 						{
@@ -428,6 +459,11 @@ void Renderer::Render(string configFile)
 	////_shapes.push_back(CreateSphere(10, vec3(0, -25, -22), CreateRedPlastic()));
 	//_lights.push_back(CreateDistantLight(vec4(0, 1, 1, 0), vec3(1)));
 	Sample s;
+	
+	random_device randomDevice; 
+	mt19937 randomGenerator(randomDevice()); 
+	auto t = uniform_real_distribution<float>(-0.5f, 0.5f);
+
 	for (int i = 0; i < _film->GetWidth(); i++)
 	{
 		for (int j = 0; j < _film->GetHeight(); j++)
@@ -442,8 +478,8 @@ void Renderer::Render(string configFile)
 				}
 				else
 				{
-					s.imageX = i + math::random(-0.5f, 0.5f);
-					s.imageY = j + math::random(-0.5f, 0.5f);;
+					s.imageX = i + t(randomGenerator);
+					s.imageY = j + t(randomGenerator);
 				}
 				
 				Ray r = _camera->GenerateRay(s);
@@ -453,7 +489,6 @@ void Renderer::Render(string configFile)
 
 				for (Shape* shape : _shapes)
 				{
-					// ToDo: pick closest
 					if (shape->Intersect(&r) && r.GetDistance() < minDist)
 					{
 						closestShape = shape;

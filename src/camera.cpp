@@ -1,5 +1,5 @@
-#include "camera.hpp";
-#include "helper.hpp";
+#include "camera.hpp"
+#include "helper.hpp"
 #include "film.hpp"
 
 using namespace cgra;

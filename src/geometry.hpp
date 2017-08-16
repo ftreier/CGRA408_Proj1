@@ -33,15 +33,23 @@ struct triangle {
 	vertex v[3]; //requires 3 verticies
 };
 
+struct BoundingBox
+{
+	float minx = std::numeric_limits<float>::max();
+	float miny = std::numeric_limits<float>::max();
+	float minz = std::numeric_limits<float>::max();
+	float maxx = -std::numeric_limits<float>::max();
+	float maxy = -std::numeric_limits<float>::max();
+	float maxz = -std::numeric_limits<float>::max();
+};
+
 class Geometry {
 private:
 
+	BoundingBox _bb;
+
 	// Feilds for storing raw obj information
 	std::string m_filename;
-	std::vector<cgra::vec3> m_points;	// Point list
-	std::vector<cgra::vec2> m_uvs;		// Texture Coordinate list
-	std::vector<cgra::vec3> m_normals;	// Normal list
-	std::vector<triangle> m_triangles;	// Triangle/Face list
 
 	bool m_wireFrameOn = false;
 
@@ -62,5 +70,11 @@ public:
 
 	void renderGeometry();
 	void toggleWireFrame();
-	
+	void createBoundingBox();
+	BoundingBox GetBoundingBox();
+
+	std::vector<triangle> m_triangles;	// Triangle/Face list
+	std::vector<cgra::vec3> m_points;	// Point list
+	std::vector<cgra::vec2> m_uvs;		// Texture Coordinate list
+	std::vector<cgra::vec3> m_normals;	// Normal list
 };
